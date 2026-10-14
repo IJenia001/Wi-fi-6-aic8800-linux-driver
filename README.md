@@ -15,7 +15,7 @@ AIC8800/AIC8800D80 USB Wi-Fi 6 adapters identified in the Windows INF files.
 
 ## Project Overview
 
-The AIC8800 Linux Driver supports USB Wi-Fi adapters based on the AIC8800/AIC8800D80 chipsets. The compatibility target is Linux 6.1 and newer; actual hardware support depends on the adapter and its firmware.
+The AIC8800 Linux Driver supports USB Wi-Fi adapters based on the AIC8800/AIC8800D80 chipsets. A clean module build has been verified with Linux 7.0 and 7.2.6 headers. Hardware operation still depends on the adapter and its firmware and should be checked on the target system.
 
 ## Features
 

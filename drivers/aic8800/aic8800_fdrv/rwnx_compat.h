@@ -35,6 +35,17 @@
 #define in_irq() in_hardirq()
 #endif
 
+/* cfg80211 key and station callbacks use wireless_dev starting in 7.2. */
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(7, 2, 0)
+#define RWNX_CFG80211_DEV_TYPE struct wireless_dev
+#define RWNX_CFG80211_TO_NETDEV(wdev) ((wdev)->netdev)
+#define RWNX_NETDEV_TO_CFG80211(dev) ((dev)->ieee80211_ptr)
+#else
+#define RWNX_CFG80211_DEV_TYPE struct net_device
+#define RWNX_CFG80211_TO_NETDEV(wdev) (wdev)
+#define RWNX_NETDEV_TO_CFG80211(dev) (dev)
+#endif
+
 /* Kernel 6.x compatibility fixes */
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(6, 0, 0)
 /* ieee80211_amsdu_to_8023s signature changed in kernel 6.3 */
