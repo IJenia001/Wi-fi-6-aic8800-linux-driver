@@ -283,6 +283,10 @@ static int aic_load_firmware(u32 ** fw_buf, const char *name, struct device *dev
 
 
 	buffer = vmalloc(size);
+	if (!buffer) {
+		release_firmware(fw);
+		return -1;
+	}
 	memset(buffer, 0, size);
 	memcpy(buffer, dst, size);
 	
@@ -372,7 +376,6 @@ static int aic_load_firmware(u32 ** fw_buf, const char *name, struct device *dev
 
     /* start to read from firmware file */
     buffer = vmalloc(size);
-    memset(buffer, 0, size);
     if(!buffer){
             *fw_buf=NULL;
             __putname(path);
@@ -380,6 +383,7 @@ static int aic_load_firmware(u32 ** fw_buf, const char *name, struct device *dev
             fp=NULL;
             return -1;
     }
+    memset(buffer, 0, size);
 
 
     #if LINUX_VERSION_CODE > KERNEL_VERSION(4, 13, 16)

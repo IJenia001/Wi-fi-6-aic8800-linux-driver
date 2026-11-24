@@ -3,7 +3,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 FIRMWARE_DIR="/lib/firmware/aic8800D80"
-TARGET_KVER="${AIC_TARGET_KVER:-$(uname -r)}"
 
 if [ "$(id -u)" -eq 0 ]; then
     SUDO=""
@@ -27,13 +26,8 @@ printf '%s\n' aic_load_fw aic8800_fdrv aic_zlp_quirk | $SUDO tee /etc/modules-lo
 $SUDO udevadm control --reload
 $SUDO udevadm trigger
 
-echo "Loading Wi-Fi and Bluetooth modules..."
-if [ "$TARGET_KVER" = "$(uname -r)" ]; then
-    $SUDO modprobe aic_load_fw
-    $SUDO modprobe aic8800_fdrv
-else
-    echo "Modules installed for kernel $TARGET_KVER; they will load when that kernel boots."
-fi
+echo "Firmware and boot-time module list installed."
+echo "DKMS loads the modules after depmod when this kernel is running."
 
 echo "##################################################"
 echo "The Setup Script is completed !"
