@@ -41,21 +41,23 @@ To compile and install this driver, ensure the following dependencies are instal
 
 - Linux kernel headers for the target kernel
 - GCC and Make
+- DKMS (`dkms`), so the modules rebuild automatically when a new kernel is installed
 
-To build and install for a different installed kernel, pass its version and
-build directory to `make`. This is useful when the running kernel differs from
-the kernel being prepared for installation:
+`sudo make install` registers this tree with DKMS. After that, installing a
+new kernel rebuilds `aic_load_fw`, `aic8800_fdrv`, and `aic_zlp_quirk` through
+`/etc/kernel/postinst.d/dkms`.
+
+To install for a different kernel that already has headers:
 
 ```bash
-make KVER=6.1.0-<version> KDIR=/lib/modules/6.1.0-<version>/build
-sudo make install KVER=6.1.0-<version> KDIR=/lib/modules/6.1.0-<version>/build
+sudo make install KVER=6.1.0-<version>
 ```
 
 Use the exact kernel version and matching headers installed on your system.
 
 ```bash
 # Debian/Ubuntu
-sudo apt install build-essential linux-headers-$(uname -r)
+sudo apt install build-essential dkms linux-headers-$(uname -r)
 ```
 
 ## Installation
@@ -72,13 +74,15 @@ sudo apt install build-essential linux-headers-$(uname -r)
 
 ### Installing the Driver
 
-2. Install the compiled Wi-Fi and Bluetooth modules and firmware (the installer
-also enables loading the Wi-Fi modules at boot). If building for a kernel other
-than the running one, pass the same `KVER` and `KDIR` values as during build:
+2. Install the package with DKMS. This copies the source to
+   `/usr/src/aic8800-1.0.0`, builds the three modules, installs the firmware,
+   and loads the modules when the target kernel is the running one:
 
    ```bash
    sudo make install
    ```
+
+   Check the registration with `dkms status`.
 
 3. To verify both modules are loaded, run:
 

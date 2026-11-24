@@ -529,6 +529,33 @@ module_param(aicwf_dbg_level, int, 0660);
 int testmode = 0;
 char aic_fw_path[200];
 
+int aic_fw_path_append(const char *subdir)
+{
+	char saved[sizeof(aic_fw_path)];
+	size_t len, sublen;
+
+	if (!subdir || !subdir[0])
+		return 0;
+
+	len = strnlen(aic_fw_path, sizeof(aic_fw_path));
+	if (len >= sizeof(aic_fw_path))
+		return -ENAMETOOLONG;
+
+	sublen = strlen(subdir);
+	if (len > sublen &&
+	    aic_fw_path[len - sublen - 1] == '/' &&
+	    strcmp(aic_fw_path + len - sublen, subdir) == 0)
+		return 0;
+
+	if (len + 1 + sublen >= sizeof(aic_fw_path))
+		return -ENAMETOOLONG;
+
+	memcpy(saved, aic_fw_path, len);
+	saved[len] = '\0';
+	scnprintf(aic_fw_path, sizeof(aic_fw_path), "%s/%s", saved, subdir);
+	return 0;
+}
+
 void rwnx_skb_align_8bytes(struct sk_buff *skb){
 #ifdef CONFIG_ALIGN_8BYTES
 	int align __maybe_unused;
